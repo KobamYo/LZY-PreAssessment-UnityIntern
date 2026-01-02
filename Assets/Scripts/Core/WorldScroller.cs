@@ -2,10 +2,13 @@ using UnityEngine;
 
 public class WorldScroller : MonoBehaviour
 {
-    public float speed = 10f;
+    [SerializeField] private float speed = 10f;
 
     void Update()
     {
+        if (GameManager.Instance != null && GameManager.Instance.IsGameOver())
+            return;
+            
         transform.Translate(Vector3.back * speed * Time.deltaTime);
     }
 }

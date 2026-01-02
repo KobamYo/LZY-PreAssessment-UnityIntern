@@ -4,21 +4,21 @@ using Mediapipe.Unity;
 public class HandRunnerController : MonoBehaviour
 {
     [Header("MediaPipe")]
-    public MultiHandLandmarkListAnnotation handAnnotations;
+    [SerializeField] private MultiHandLandmarkListAnnotation handAnnotations;
 
     [Header("Player")]
-    public Transform player;
+    [SerializeField] private Transform player;
 
     [Header("Sensitivity")]
-    public float sensitivity = 60f;   // world units per hand movement
+    [SerializeField] private float sensitivity = 60f;   // world units per hand movement
 
     [Header("Limits")]
-    public float minX = -30f;
-    public float maxX = 20f;
+    [SerializeField] private float minX = -30f;
+    [SerializeField] private float maxX = 20f;
 
     [Header("Smoothing")]
-    public float smoothSpeed = 10f;
-
+    [SerializeField] private float smoothSpeed = 10f;
+    
     private bool calibrated = false;
     private float centerHandX;
     private float startPlayerX;
@@ -40,7 +40,6 @@ public class HandRunnerController : MonoBehaviour
         float handX = Camera.main
             .WorldToViewportPoint(hand[0].transform.position).x;
 
-        // Calibrate on first detection
         if (!calibrated)
         {
             centerHandX = handX;
@@ -56,5 +55,13 @@ public class HandRunnerController : MonoBehaviour
         Vector3 pos = player.position;
         pos.x = Mathf.Lerp(pos.x, targetX, Time.deltaTime * smoothSpeed);
         player.position = pos;
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Obstacle"))
+        {
+            GameManager.Instance.GameOver();
+        }
     }
 }
